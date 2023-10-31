@@ -28,8 +28,10 @@ jobs:
           GIT_PR_RELEASE_TEMPLATE: './.github/dev2prod-pr-template.erb'
         run: |
           gem install -N git-pr-release
+          git-pr-release 1>&output.txt
+          PR_URL=$(grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt)  # URLを変数に格納
+          echo "::set-output name=PR_URL::$PR_URL"  # URLを出力変数に設定
 
       - name: Display PR Link
         run: |
-          echo "The PR Link is: ${{ steps.create-release-pr.outputs.PR_URL }}"
-
+          echo "The PR Link is: ${{ steps.create-release-pr.outputs.PR_URL }}"  # create-release-prステップの出力を参照
