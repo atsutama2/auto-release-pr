@@ -25,6 +25,7 @@ jobs:
           git-pr-release 1>output.txt 2>&1
           cat output.txt  # output.txtの内容をログに出力します
         env:
+          GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
           GIT_PR_RELEASE_BRANCH_STAGING: develop
           GIT_PR_RELEASE_LABELS: release
