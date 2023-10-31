@@ -1,6 +1,14 @@
 on:
   push:
+    branches:
+      - 'develop'
+      - 'prod'
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
 
 name: CI
 
