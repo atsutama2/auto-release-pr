@@ -1,0 +1,39 @@
+name: Create Release PR
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby 3.1
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+
+      - name: Create a release pull request
+        id: create-pr  # このステップにIDを付けて、後で出力を参照できるようにします
+        run: |
+          gem install -N git-pr-release
+          git-pr-release 1>&output.txt
+          PR_URL=$(grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt)  # URLを変数に格納
+          echo "PR_URL=$PR_URL" >> $GITHUB_ENV  # URLを環境変数に設定
+          echo "::set-output name=pr_url::$PR_URL"  # URLを出力変数に設定
+          echo "Created PR: $PR_URL"  # URLをログに出力
+        env:
+          GIT_PR_RELEASE_TOKEN: ${{ secrets.GHEC_MACHINE_ACCESS_TOKEN }}
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
+          GIT_PR_RELEASE_BRANCH_STAGING: develop
+          GIT_PR_RELEASE_LABELS: release
+
+      - name: Display PR Link  # 新しいステップを追加して、作成されたPRのリンクを表示します
+        run: |
+          echo "The PR Link is: ${{ steps.create-pr.outputs.pr_url }}"  # create-prステップの出力を参照
+
