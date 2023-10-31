@@ -19,14 +19,14 @@ jobs:
           ruby-version: 3.1
 
       - name: Create a release pull request
-        id: create-pr  # このステップにIDを付けて、後で出力を参照できるようにします
+        id: create-pr
         run: |
           gem install -N git-pr-release
-          git-pr-release 1>&output.txt
+          git-pr-release 1>output.txt 2>&1  # 標準エラーもoutput.txtにリダイレクトします
           PR_URL=$(grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt)  # URLを変数に格納
           echo "PR_URL=$PR_URL" >> $GITHUB_ENV  # URLを環境変数に設定
           echo "::set-output name=pr_url::$PR_URL"  # URLを出力変数に設定
-          echo "Created PR: $PR_URL"  # URLをログに出力
+          cat output.txt  # output.txtの内容をログに出力します
         env:
           GIT_PR_RELEASE_TOKEN: ${{ secrets.GHEC_MACHINE_ACCESS_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
