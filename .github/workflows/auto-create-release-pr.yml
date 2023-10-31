@@ -22,6 +22,7 @@ jobs:
         id: create-pr
         run: |
           gem install -N git-pr-release
+          git-pr-release 1>&output.txt
         env:
           GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
