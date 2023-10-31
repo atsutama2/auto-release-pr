@@ -30,5 +30,3 @@ jobs:
           GIT_PR_RELEASE_TEMPLATE: './.github/dev2prod-pr-template.erb'
         run: |
           gem install -N git-pr-release
-          git-pr-release 1>&output.txt
-          echo "PR_URL=`grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt`" >> $GITHUB_OUTPUT
