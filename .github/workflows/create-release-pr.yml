@@ -22,8 +22,6 @@ jobs:
       - name: Create a release pull request
         id: create-release-pr
         env:
-          RELEASE_NOTE_LINK: ${{ github.event.inputs.releaseNoteLink }}
-          GIT_PR_RELEASE_TOKEN: ${{ secrets.GHEC_MACHINE_ACCESS_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
           GIT_PR_RELEASE_BRANCH_STAGING: develop
           GIT_PR_RELEASE_LABELS: release
