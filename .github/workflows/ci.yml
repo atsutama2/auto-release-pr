@@ -4,9 +4,6 @@ on:
 
 name: CI
 
-env:
-  GO_VERSION: 1.20
-
 jobs:
   format:
     runs-on: ubuntu-latest
@@ -34,6 +31,6 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.46.2
+          version: v1.52.2
           skip-pkg-cache: true
           skip-build-cache: true
