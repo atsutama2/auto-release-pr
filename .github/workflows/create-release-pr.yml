@@ -27,8 +27,6 @@ jobs:
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
           GIT_PR_RELEASE_BRANCH_STAGING: develop
           GIT_PR_RELEASE_LABELS: release
-          # git-pr-releaseコマンド実行時の作業リポジトリへのpathが強制的に先頭につくので、相対パスで指定する
-          GIT_PR_RELEASE_TEMPLATE: './.github/dev2prod-pr-template.erb'
         run: |
           gem install -N git-pr-release
           git-pr-release 1>&output.txt
