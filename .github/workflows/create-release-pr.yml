@@ -1,12 +1,8 @@
 name: Create Release PR
 
 on:
-  workflow_dispatch:
-    inputs:
-      releaseNoteLink:
-        type: string
-        description: "release note's link"
-        required: true
+    repository_dispatch:  # workflow_dispatchをrepository_dispatchに変更
+        types: [create_release_pr]  # トリガーするイベントタイプを指定
 
 jobs:
   create-release-pr:
