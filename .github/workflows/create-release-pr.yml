@@ -1,0 +1,33 @@
+name: Create Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseNoteLink:
+        type: string
+        description: "release note's link"
+        required: true
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby 3.1
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+
+      - name: Create a release pull request
+        id: create-release-pr
+        env:
+          RELEASE_NOTE_LINK: ${{ github.event.inputs.releaseNoteLink }}
+          GIT_PR_RELEASE_TOKEN: ${{ secrets.GHEC_MACHINE_ACCESS_TOKEN }}
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
+          GIT_PR_RELEASE_BRANCH_STAGING: develop
+          GIT_PR_RELEASE_LABELS: release
+        run: |
+          gem install -N git-pr-release
+          git-pr-release 1>&output.txt
+          echo "PR_URL=`grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt`" >> $GITHUB_OUTPUT
