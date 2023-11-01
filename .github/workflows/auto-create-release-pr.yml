@@ -33,4 +33,4 @@ jobs:
 
       - name: Display PR Link
         run: |
-          echo "The PR Link is: ${{ steps.create-release-pr.outputs.PR_URL }}"  # create-release-prステップの出力を参照
+          echo "The PR Link is: ${{ steps.create-release-pr.outputs.PR_URL }}"
