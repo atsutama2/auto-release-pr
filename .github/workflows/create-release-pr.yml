@@ -3,7 +3,7 @@ name: Trigger Release PR Workflow
 on:
   workflow_call:
     secrets:
-      github-token:
+      GITHUB_TOKEN:
         required: true
 
 jobs:
