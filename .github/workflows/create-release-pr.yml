@@ -3,8 +3,6 @@ name: Create Release PR
 on:
   workflow_call:
     secrets:
-      releaseNoteLink:
-        required: true
       accessToken:
         required: true
 
