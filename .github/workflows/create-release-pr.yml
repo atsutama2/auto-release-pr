@@ -22,7 +22,7 @@ jobs:
       - name: Create a release pull request
         id: create-release-pr
         env:
-          RELEASE_NOTE_LINK: ${{ github.event.inputs.releaseNoteLink }}
+          RELEASE_NOTE_LINK: 'https://docs.google.com/document/d/1JVFn28r0EZembBkEkI_NjXemZzHzZW72PFpxeuekLEs/edit?usp=sharing'
           GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
           GIT_PR_RELEASE_BRANCH_STAGING: develop
