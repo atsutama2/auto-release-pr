@@ -19,7 +19,7 @@ jobs:
       - name: Create a release pull request
         id: create-release-pr
         env:
-          RELEASE_NOTE_LINK: ${{ secrets.RELEASE_NOTE_LINK }}
+          RELEASE_NOTE_LINK: "https://www.google.co.jp/"
           GIT_PR_RELEASE_TOKEN: ${{ secrets.accessToken }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
           GIT_PR_RELEASE_BRANCH_STAGING: develop
