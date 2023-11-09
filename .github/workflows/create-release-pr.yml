@@ -1,9 +1,10 @@
 name: Create Release PR
 
 on:
-  push:
-    branches:
-      - develop
+  workflow_call:
+    secrets:
+      accessToken:
+        required: true
 
 jobs:
   create-release-pr:
@@ -18,6 +19,7 @@ jobs:
       - name: Create a release pull request
         id: create-release-pr
         env:
+          RELEASE_NOTE_LINK: ${{ secrets.RELEASE_NOTE_LINK }}
           GIT_PR_RELEASE_TOKEN: ${{ secrets.accessToken }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
           GIT_PR_RELEASE_BRANCH_STAGING: develop
