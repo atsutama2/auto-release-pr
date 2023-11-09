@@ -28,3 +28,4 @@ jobs:
           GIT_PR_RELEASE_TEMPLATE: './.github/dev2prod-pr-template.erb'
         run: |
           gem install -N git-pr-release
+          git-pr-release
