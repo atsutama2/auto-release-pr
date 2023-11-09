@@ -1,12 +1,7 @@
 name: Create Release PR
 
 on:
-  workflow_dispatch:
-    inputs:
-      releaseNoteLink:
-        type: string
-        description: "release note's link"
-        required: true
+  workflow_call:
 
 jobs:
   create-release-pr:
