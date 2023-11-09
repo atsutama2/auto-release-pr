@@ -1,17 +1,15 @@
-name: Trigger Release PR Workflow
+name: Create Release PR
 
 on:
-  workflow_call:
-    secrets:
-      ACCESS_TOKEN:
-        required: true
+  push:
+    branches:
+      - develop
 
 jobs:
   create-release-pr:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Ruby 3.1
         uses: actions/setup-ruby@v1
         with:
@@ -21,11 +19,12 @@ jobs:
         id: create-release-pr
         env:
           RELEASE_NOTE_LINK: ${{ secrets.RELEASE_NOTE_LINK }}
-          GIT_PR_RELEASE_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GIT_PR_RELEASE_TOKEN: ${{ secrets.accessToken }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
           GIT_PR_RELEASE_BRANCH_STAGING: develop
           GIT_PR_RELEASE_LABELS: release
           GIT_PR_RELEASE_TEMPLATE: './.github/dev2prod-pr-template.erb'
         run: |
           gem install -N git-pr-release
-          git-pr-release
+          git-pr-release 1>&output.txt
+          echo "PR_URL=`grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt`" >> $GITHUB_OUTPUT
