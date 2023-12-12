@@ -44,4 +44,5 @@ jobs:
           echo "PR_EXISTS=${PR_EXISTS}" >> $GITHUB_ENV
 
       - name: Display PR existence status
-        run: echo "PR Exists: ${{ env.PR_EXISTS }}"
+        run: |
+          echo "PR Exists: ${{ env.PR_EXISTS }}"
