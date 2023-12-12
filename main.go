@@ -6,6 +6,7 @@ import (
 
 func main() {
 	fmt.Println("Hello, World!")
+	fmt.Println("Hello, World!")
 	fmt.Println("Hogehoge")
 	fmt.Println("fugafuga")
 	fmt.Println("test1")
@@ -15,4 +16,5 @@ func main() {
 	fmt.Println("test5")
 	fmt.Println("test6")
 	fmt.Println("test7")
+	fmt.Println("test8")
 }
