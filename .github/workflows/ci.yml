@@ -42,32 +42,3 @@ jobs:
           version: v1.52.2
           skip-pkg-cache: true
           skip-build-cache: true
-  create-release-pr:
-    needs: [format, lint]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Ruby 3.1
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 3.1
-
-      - name: Create a release pull request
-        id: create-release-pr
-        env:
-          GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
-          GIT_PR_RELEASE_BRANCH_STAGING: develop
-          GIT_PR_RELEASE_LABELS: release
-          GIT_PR_RELEASE_TEMPLATE: './.github/dev2prod-pr-template.erb'
-        run: |
-          gem install -N git-pr-release
-          git-pr-release 1>&output.txt
-          echo "PR_URL=`grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt`" >> $GITHUB_OUTPUT
-
-      - name: Display PR Link
-        run: |
-          echo "The PR Link is: ${{ steps.create-release-pr.outputs.PR_URL }}"
