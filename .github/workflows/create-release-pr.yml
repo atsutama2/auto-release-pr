@@ -29,3 +29,19 @@ jobs:
           gem install -N git-pr-release
           git-pr-release 1>&output.txt
           echo "PR_URL=`grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt`" >> $GITHUB_OUTPUT
+
+      - name: Extract PR Number
+        run: |
+            PR_NUMBER=$(echo ${{ steps.create-release-pr.outputs.PR_URL }} | grep -oP 'pull/\K\d+')
+            echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
+
+      - name: Check for existing PRs
+        id: check-prs
+        if: env.PR_NUMBER != ''
+        run: |
+          PR_EXISTS=$(curl -H "Authorization: token ${{ secrets.accessToken }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq '.state == "open"')
+          echo "PR_EXISTS=${PR_EXISTS}" >> $GITHUB_ENV
+
+      - name: Display PR existence status
+        run: echo "PR Exists: ${{ env.PR_EXISTS }}"
