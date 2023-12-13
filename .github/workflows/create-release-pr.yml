@@ -49,10 +49,8 @@ jobs:
             echo "PR_IS_NEW=false" >> $GITHUB_ENV
           fi
 
+      - name: Display PR existence status
+        run: |
           echo "PR Created At: ${{ env.PR_CREATED_AT }}"
           echo "PR Updated At: ${{ env.PR_UPDATED_AT }}"
           echo "Is PR New: ${{ env.PR_IS_NEW }}"
-
-      - name: Display PR existence status
-        run: |
-          echo "PR Exists: ${{ env.PR_IS_NEW }}"
