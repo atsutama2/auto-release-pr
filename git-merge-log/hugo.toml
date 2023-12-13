@@ -1,6 +1,0 @@
-baseURL = '/'
-languageCode = 'en-us'
-DefaultContentLanguage = "en"
-title = 'Git Merge Log'
-theme = 'docdock'
-pygmentsStyle = "monokailight"
