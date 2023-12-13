@@ -1,0 +1,42 @@
+name: github pages
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    outputs:
+        current_date: ${{ steps.date.outputs.current_date }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Print PR Details
+        run: |
+            echo "PR Number: ${{ github.event.pull_request.number }}"
+            echo "Title: ${{ github.event.pull_request.title }}"
+            echo "Description: ${{ github.event.pull_request.body }}"
+            echo "Author: ${{ github.event.pull_request.user.login }}"
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.121.0'
+
+      - name: Get Current Date
+        id: date
+        run: |
+          echo "current_date=$(TZ=Asia/Tokyo date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_OUTPUT
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
