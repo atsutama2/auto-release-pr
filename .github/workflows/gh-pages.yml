@@ -33,7 +33,6 @@ jobs:
           echo "current_date=$(TZ=Asia/Tokyo date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_OUTPUT
 
       - name: Create new post with PR details
-        if: github.event.pull_request.merged == true
         run: |
             FILENAME=${{ steps.date.outputs.current_date }}
             PR_TITLE="${{ github.event.pull_request.title }}"
