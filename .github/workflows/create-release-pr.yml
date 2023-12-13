@@ -1,10 +1,10 @@
-name: Create Release PR
+name: Trigger Release PR Workflow
 
 on:
-  workflow_call:
-    secrets:
-      accessToken:
-        required: true
+  pull_request:
+    types: [opened]
+    branches:
+      - develop
 
 jobs:
   create-release-pr:
@@ -20,8 +20,8 @@ jobs:
       - name: Create a release pull request
         id: create-release-pr
         env:
-          RELEASE_NOTE_LINK: "https://www.google.co.jp/"
-          GIT_PR_RELEASE_TOKEN: ${{ secrets.accessToken }}
+          RELEASE_NOTE_LINK: ${{ secrets.RELEASE_NOTE_LINK }}
+          GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
           GIT_PR_RELEASE_BRANCH_STAGING: develop
           GIT_PR_RELEASE_LABELS: release
@@ -33,17 +33,27 @@ jobs:
 
       - name: Extract PR Number
         run: |
-          PR_NUMBER=$(echo ${{ steps.create-release-pr.outputs.PR_URL }} | grep -oP 'pull/\K\d+')
-          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
+            PR_NUMBER=$(echo ${{ steps.create-release-pr.outputs.PR_URL }} | grep -oP 'pull/\K\d+')
+            echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
 
       - name: Check for existing PRs
         id: check-prs
         if: env.PR_NUMBER != ''
         run: |
-          PR_EXISTS=$(curl -H "Authorization: token ${{ secrets.accessToken }}" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}" | jq '.state == "open"')
-          echo "PR_EXISTS=${PR_EXISTS}" >> $GITHUB_ENV
+          PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
+          echo "PR Response: $PR_RESPONSE"
+          PR_CREATED_AT=$(echo "$PR_RESPONSE" | jq '.created_at')
+          PR_UPDATED_AT=$(echo "$PR_RESPONSE" | jq '.updated_at')
+          if [ "$PR_CREATED_AT" == "$PR_UPDATED_AT" ]; then
+            echo "PR_IS_NEW=true" >> $GITHUB_ENV
+          else
+            echo "PR_IS_NEW=false" >> $GITHUB_ENV
+          fi
+
+          echo "PR Created At: $PR_CREATED_AT"
+          echo "PR Updated At: $PR_UPDATED_AT"
 
       - name: Display PR existence status
         run: |
-          echo "PR Exists: ${{ env.PR_EXISTS }}"
+          echo "$PR_IS_NEW"
