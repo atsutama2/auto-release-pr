@@ -14,5 +14,4 @@ func main() {
 	fmt.Println("Hogehoge")
 	fmt.Println("fugafuga")
 	fmt.Println("Hogehoge")
-	fmt.Println("Hogehoge")
 }
