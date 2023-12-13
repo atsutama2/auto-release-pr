@@ -39,7 +39,7 @@ jobs:
         id: check-prs
         if: env.PR_NUMBER != ''
         run: |
-          PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.accessToken }}" \
+          PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           -s "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
           echo "API Response: $PR_RESPONSE"
           PR_STATUS=$(echo "$PR_RESPONSE" | jq -r '.state')
