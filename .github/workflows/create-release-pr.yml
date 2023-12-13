@@ -39,12 +39,17 @@ jobs:
         id: check-prs
         if: env.PR_NUMBER != ''
         run: |
-          PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.accessToken }}" \
+          PR_STATUS=$(curl -H "Authorization: token ${{ secrets.accessToken }}" \
+          -o /dev/null -s -w "%{http_code}" \
           "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
-          PR_STATE=$(echo "$PR_RESPONSE" | jq -r '.state')
-          PR_EXISTS=false
-          if [ "$PR_STATE" != "null" ]; then
+          if [ "$PR_STATUS" == "200" ]; then
             PR_EXISTS=true
+            PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.accessToken }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
+            PR_STATE=$(echo "$PR_RESPONSE" | jq -r '.state')
+          else
+            PR_EXISTS=false
+            PR_STATE=null
           fi
           echo "PR_STATE=${PR_STATE}" >> $GITHUB_ENV
           echo "PR_EXISTS=${PR_EXISTS}" >> $GITHUB_ENV
