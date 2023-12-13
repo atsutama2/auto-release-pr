@@ -32,28 +32,6 @@ jobs:
         run: |
           echo "current_date=$(TZ=Asia/Tokyo date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_OUTPUT
 
-      - name: Create new post with PR details
-        run: |
-            FILENAME=${{ steps.date.outputs.current_date }}
-            PR_TITLE="${{ github.event.pull_request.title }}"
-            PR_URL="${{ github.event.pull_request.html_url }}"
-            PR_BODY="${{ github.event.pull_request.body }}"
-            PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-            POST_PATH="content/posts/$FILENAME.md"
-            hugo new "$POST_PATH"
-            {
-                echo "### $PR_TITLE"
-                echo "## Description"
-                echo "$PR_BODY"
-                echo "Pull Request is ${{ github.server_url }}/${{ github.repository }}/pull/${{ steps.pr.outputs.pull_request_number }}""
-                echo "## Author"
-                echo "$PR_AUTHOR"
-            } >> "$POST_PATH"
-            git config --global user.name "github-actions[bot]"
-            git add .
-            git commit -m "Add new post with PR details: $PR_TITLE"
-            git push
-
       - name: Build
         run: hugo --minify
 
