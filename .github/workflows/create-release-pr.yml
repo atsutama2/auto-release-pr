@@ -32,20 +32,27 @@ jobs:
 
       - name: Extract PR Number
         run: |
-          NEW_PR_NUMBER=$(echo ${{ steps.create-release-pr.outputs.PR_URL }} | grep -oP 'pull/\K\d+')
-          echo "NEW_PR_NUMBER=${NEW_PR_NUMBER}" >> $GITHUB_ENV
+            PR_NUMBER=$(echo ${{ steps.create-release-pr.outputs.PR_URL }} | grep -oP 'pull/\K\d+')
+            echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
 
-      - name: Check if the PR is a new one
-        if: env.NEW_PR_NUMBER != ''
+      - name: Check for existing PRs
+        id: check-prs
+        if: env.PR_NUMBER != ''
         run: |
-          EXISTING_PR_NUMBER=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls?state=open&base=prod&head=${{ github.repository_owner }}:develop" | jq -r '.[0].number')
-          if [ "$EXISTING_PR_NUMBER" == "$NEW_PR_NUMBER" ]; then
-            echo "PR_EXISTS=false" >> $GITHUB_ENV
+          PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
+          PR_CREATED_AT=$(echo "$PR_RESPONSE" | jq -r '.created_at')
+          PR_UPDATED_AT=$(echo "$PR_RESPONSE" | jq -r '.updated_at')
+          if [ "$PR_CREATED_AT" == "$PR_UPDATED_AT" ]; then
+            echo "PR_IS_NEW=true" >> $GITHUB_ENV
           else
-            echo "PR_EXISTS=true" >> $GITHUB_ENV
+            echo "PR_IS_NEW=false" >> $GITHUB_ENV
           fi
+
+          echo "PR Created At: ${{ env.PR_CREATED_AT }}"
+          echo "PR Updated At: ${{ env.PR_UPDATED_AT }}"
+          echo "Is PR New: ${{ env.PR_IS_NEW }}"
 
       - name: Display PR existence status
         run: |
-          echo "PR Exists: ${{ env.PR_EXISTS }}"
+          echo "PR Exists: ${{ env.PR_IS_NEW }}"
