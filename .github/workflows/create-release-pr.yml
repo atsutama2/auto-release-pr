@@ -1,7 +1,8 @@
 name: Trigger Release PR Workflow
 
 on:
-  push:
+  pull_request:
+    types: [opened]
     branches:
       - develop
 
