@@ -32,27 +32,19 @@ jobs:
 
       - name: Extract PR Number
         run: |
-            PR_NUMBER=$(echo ${{ steps.create-release-pr.outputs.PR_URL }} | grep -oP 'pull/\K\d+')
-            echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
+          NEW_PR_NUMBER=$(echo ${{ steps.create-release-pr.outputs.PR_URL }} | grep -oP 'pull/\K\d+')
+          echo "NEW_PR_NUMBER=${NEW_PR_NUMBER}" >> $GITHUB_ENV
 
-      - name: Check for existing PRs
-        id: check-prs
-        if: env.PR_NUMBER != ''
+      - name: Check if the PR is a new one
+        if: env.NEW_PR_NUMBER != ''
         run: |
-          PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -s "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
-          echo "API Response: $PR_RESPONSE"
-          PR_STATUS=$(echo "$PR_RESPONSE" | jq -r '.state')
-          echo "PR Status: $PR_STATUS"
-          if [ "$PR_STATUS" != "null" -a "$PR_STATUS" != "" ]; then
-            PR_EXISTS=true
-            PR_STATE=$PR_STATUS
+          EXISTING_PR_NUMBER=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls?state=open&base=prod&head=${{ github.repository_owner }}:develop" | jq -r '.[0].number')
+          if [ "$EXISTING_PR_NUMBER" == "$NEW_PR_NUMBER" ]; then
+            echo "PR_EXISTS=false" >> $GITHUB_ENV
           else
-            PR_EXISTS=false
-            PR_STATE=null
+            echo "PR_EXISTS=true" >> $GITHUB_ENV
           fi
-          echo "PR_STATE=${PR_STATE}" >> $GITHUB_ENV
-          echo "PR_EXISTS=${PR_EXISTS}" >> $GITHUB_ENV
 
       - name: Display PR existence status
         run: |
