@@ -41,8 +41,9 @@ jobs:
         run: |
           PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
-          PR_CREATED_AT=$(echo "$PR_RESPONSE" | jq -r '.created_at')
-          PR_UPDATED_AT=$(echo "$PR_RESPONSE" | jq -r '.updated_at')
+          echo "PR Created At: ${{ env.PR_RESPONSE }}"
+          PR_CREATED_AT=$(echo "$PR_RESPONSE" | jq '.created_at')
+          PR_UPDATED_AT=$(echo "$PR_RESPONSE" | jq '.updated_at')
           if [ "$PR_CREATED_AT" == "$PR_UPDATED_AT" ]; then
             echo "PR_IS_NEW=true" >> $GITHUB_ENV
           else
