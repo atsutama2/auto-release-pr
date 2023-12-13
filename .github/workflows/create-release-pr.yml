@@ -41,7 +41,7 @@ jobs:
         run: |
           PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
-          echo "PR Created At: ${{ env.PR_RESPONSE }}"
+          echo "$PR_RESPONSE"
           PR_CREATED_AT=$(echo "$PR_RESPONSE" | jq '.created_at')
           PR_UPDATED_AT=$(echo "$PR_RESPONSE" | jq '.updated_at')
           if [ "$PR_CREATED_AT" == "$PR_UPDATED_AT" ]; then
@@ -52,6 +52,6 @@ jobs:
 
       - name: Display PR existence status
         run: |
-          echo "PR Created At: ${{ env.PR_CREATED_AT }}"
-          echo "PR Updated At: ${{ env.PR_UPDATED_AT }}"
-          echo "Is PR New: ${{ env.PR_IS_NEW }}"
+          echo "$PR_CREATED_AT"
+          echo "$env.PR_UPDATED_AT"
+          echo "$PR_IS_NEW"
