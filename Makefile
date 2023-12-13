@@ -1,3 +1,0 @@
-upd-mod:
-	go mod tidy
-	go vet ./...
