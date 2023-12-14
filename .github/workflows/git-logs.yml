@@ -1,4 +1,4 @@
-name: GitHubPages
+name: Create Git Logs Pages
 
 on:
   push:
