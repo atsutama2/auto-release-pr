@@ -13,7 +13,7 @@ jobs:
 
       - name: Add Date to index.md
         run: |
-          echo "$(date) - Update" >> doc_out/index.md
+          echo "- $(date) - Update" >> doc_out/index.md
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
