@@ -15,7 +15,7 @@ jobs:
       - name: Create Release Note Call
         if: github.event.pull_request.merged == true
         env:
-            GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           RELEASED_REPOSITORY: "auto-release-pr"
         run: |
