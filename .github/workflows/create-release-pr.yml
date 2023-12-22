@@ -2,13 +2,14 @@ name: Trigger Release PR Workflow
 
 on:
   pull_request:
-    types: [opened]
+    types: [closed]
     branches:
       - develop
 
 jobs:
   create-release-pr:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v3
 
@@ -30,30 +31,3 @@ jobs:
           gem install -N git-pr-release
           git-pr-release 1>&output.txt
           echo "PR_URL=`grep -oe 'https://github\.com/.*/pull/[0-9]*' output.txt`" >> $GITHUB_OUTPUT
-
-      - name: Extract PR Number
-        run: |
-            PR_NUMBER=$(echo ${{ steps.create-release-pr.outputs.PR_URL }} | grep -oP 'pull/\K\d+')
-            echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
-
-      - name: Check for existing PRs
-        id: check-prs
-        if: env.PR_NUMBER != ''
-        run: |
-          PR_RESPONSE=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}")
-          echo "PR Response: $PR_RESPONSE"
-          PR_CREATED_AT=$(echo "$PR_RESPONSE" | jq '.created_at')
-          PR_UPDATED_AT=$(echo "$PR_RESPONSE" | jq '.updated_at')
-          if [ "$PR_CREATED_AT" == "$PR_UPDATED_AT" ]; then
-            echo "PR_IS_NEW=true" >> $GITHUB_ENV
-          else
-            echo "PR_IS_NEW=false" >> $GITHUB_ENV
-          fi
-
-          echo "PR Created At: $PR_CREATED_AT"
-          echo "PR Updated At: $PR_UPDATED_AT"
-
-      - name: Display PR existence status
-        run: |
-          echo "$PR_IS_NEW"
