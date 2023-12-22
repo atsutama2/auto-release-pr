@@ -1,0 +1,27 @@
+name: Create Release Note
+
+on:
+  pull_request:
+    branches:
+      - prod
+    types:
+      - closed
+
+jobs:
+  call-create-release-note-workflow:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Create Release Note Call
+        if: github.event.pull_request.merged == true
+        env:
+          GHEC_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RELEASED_REPOSITORY: "auto-release-pr"
+        run: |
+          curl \
+          -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          -d "{\"ref\": \"main\", \"inputs\": {\"prNumber\": \"$PR_NUMBER\", \"releasedRepository\": \"$RELEASED_REPOSITORY\"}}" \
+          https://api.github.com/repos/atsutama2/auto_release_note_log/actions/workflows/make-release-note-call.yml/dispatches
