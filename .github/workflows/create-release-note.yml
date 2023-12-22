@@ -15,7 +15,7 @@ jobs:
       - name: Create Release Note Call
         if: github.event.pull_request.merged == true
         env:
-          GHEC_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHEC_ACCESS_TOKEN: ${{ secrets.MACHINE_ACCESS_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           RELEASED_REPOSITORY: "auto-release-pr"
         run: |
